@@ -50,7 +50,6 @@ import OrderedCollections.OrderedDict
 
 const Nonlinear = MOI.Nonlinear
 
-
 include("Containers/Containers.jl")
 
 # Exports are at the end of the file.

@@ -689,19 +689,30 @@ function register(
 end
 
 """
-    NLPEvaluator(model)
+    NLPEvaluator(
+        model::Model,
+        differentiation_backend::Nonlinear.AbstractAutomaticDifferentiation =
+            Nonlinear.SparseReverseMode(),
+    )
 
-Return an [`MOI.AbstractNLPEvaluator`](@ref) constructed from `model`.
+Return an [`MOI.AbstractNLPEvaluator`](@ref) constructed from `model`. Pass
+`differentiation_backend` to specify the differentiation backend used to compute
+derivatives.
 
-Before using, you must initialize the evaluator using [`MOI.initialize`](@ref).
+!!! warning
+    Before using, you must initialize the evaluator using
+    [`MOI.initialize`](@ref).
 """
-function NLPEvaluator(model::Model)
+function NLPEvaluator(
+    model::Model;
+    differentiation_backend::Nonlinear.AbstractAutomaticDifferentiation =
+        Nonlinear.SparseReverseMode(),
+)
     _init_NLP(model)
-    variables = all_variables(model)
     Nonlinear.set_differentiation_backend(
         model.nlp_data,
-        Nonlinear.SparseReverseMode(),
-        index.(variables),
+        differentiation_backend,
+        index.(all_variables(model)),
     )
     return model.nlp_data
 end
