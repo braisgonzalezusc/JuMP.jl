@@ -1088,10 +1088,12 @@ function test_hessians_user_defined_multivariate_functions()
     function my_∇f(g, x, y)
         g[1] = 2 * (x - 1)
         g[2] = 2 * (y - 1)
+        return
     end
     function my_∇²f(H, x, y)
         H[1, 1] = 2.0
         H[2, 2] = 2.0
+        return
     end
     @test_throws(
         ErrorException(
