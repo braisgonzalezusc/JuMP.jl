@@ -1082,6 +1082,26 @@ function test_hessians_disabled_with_user_defined_multivariate_functions()
     return
 end
 
+function test_hessians_user_defined_multivariate_functions()
+    model = Model()
+    my_f(x, y) = (x - 1)^2 + (y - 1)^2
+    function my_∇f(g, x, y)
+        g[1] = 2 * (x - 1)
+        g[2] = 2 * (y - 1)
+    end
+    function my_∇²f(H, x, y)
+        H[1, 1] = 2.0
+        H[2, 2] = 2.0
+    end
+    @test_throws(
+        ErrorException(
+            "Providing hessians for multivariate functions is not yet supported",
+        ),
+        register(model, :my_f, 2, my_f, my_∇f, my_∇²f),
+    )
+    return
+end
+
 function test_AffExpr_in_nonlinear()
     model = Model()
     @variable(model, x, start = 1.1)
@@ -1358,6 +1378,27 @@ function test_register_error_autdiff_false()
         ErrorException("Operator f is already registered."),
         register(model, :f, 1, f, f′, f′′),
     )
+    return
+end
+
+function test_nonlinear_constraint_dual()
+    model = Model() do
+        return MOI.Utilities.MockOptimizer(
+            MOI.Utilities.UniversalFallback(MOI.Utilities.Model{Float64}()),
+        )
+    end
+    @variable(model, x)
+    c = @NLconstraint(model, x^2 <= 2)
+    @objective(model, Min, x)
+    optimize!(model)
+    mock = unsafe_backend(model)
+    MOI.set(mock, MOI.TerminationStatus(), MOI.LOCALLY_SOLVED)
+    MOI.set(mock, MOI.ResultCount(), 1)
+    MOI.set(mock, MOI.VariablePrimal(), optimizer_index(x), -sqrt(2))
+    MOI.set(mock, MOI.NLPBlockDual(), [-1 / (2 * sqrt(2))])
+    @test termination_status(model) == LOCALLY_SOLVED
+    @test isapprox(value(x), -sqrt(2), atol = 1e-6)
+    @test dual(c) == -1 / (2 * sqrt(2))
     return
 end
 
