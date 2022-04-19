@@ -29,17 +29,17 @@ function Nonlinear.check_return_type(
     )
 end
 
-function Nonlinear._parse_expression(
+function Nonlinear.parse_expression(
     data::Nonlinear.NonlinearData,
     expr::Nonlinear.NonlinearExpression,
     x::VariableRef,
     parent::Int,
 )
-    Nonlinear._parse_expression(data, expr, index(x), parent)
+    Nonlinear.parse_expression(data, expr, index(x), parent)
     return
 end
 
-function Nonlinear._parse_expression(
+function Nonlinear.parse_expression(
     data::Nonlinear.NonlinearData,
     expr::Nonlinear.NonlinearExpression,
     x::GenericAffExpr,
@@ -55,11 +55,11 @@ function Nonlinear._parse_expression(
     )
     sum_parent = length(expr.nodes)
     if !iszero(x.constant)
-        Nonlinear._parse_expression(data, expr, x.constant, sum_parent)
+        Nonlinear.parse_expression(data, expr, x.constant, sum_parent)
     end
     for (v, c) in x.terms
         if isone(c)
-            Nonlinear._parse_expression(data, expr, v, sum_parent)
+            Nonlinear.parse_expression(data, expr, v, sum_parent)
         else
             push!(
                 expr.nodes,
@@ -70,14 +70,14 @@ function Nonlinear._parse_expression(
                 ),
             )
             mult_parent = length(expr.nodes)
-            Nonlinear._parse_expression(data, expr, c, mult_parent)
-            Nonlinear._parse_expression(data, expr, v, mult_parent)
+            Nonlinear.parse_expression(data, expr, c, mult_parent)
+            Nonlinear.parse_expression(data, expr, v, mult_parent)
         end
     end
     return
 end
 
-function Nonlinear._parse_expression(
+function Nonlinear.parse_expression(
     data::Nonlinear.NonlinearData,
     expr::Nonlinear.NonlinearExpression,
     x::QuadExpr,
@@ -90,17 +90,17 @@ function Nonlinear._parse_expression(
         Nonlinear.Node(Nonlinear.NODE_CALL_MULTIVARIATE, sum, parent),
     )
     sum_parent = length(expr.nodes)
-    Nonlinear._parse_expression(data, expr, x.aff, sum_parent)
+    Nonlinear.parse_expression(data, expr, x.aff, sum_parent)
     for (xy, c) in x.terms
         push!(
             expr.nodes,
             Nonlinear.Node(Nonlinear.NODE_CALL_MULTIVARIATE, prod, sum_parent),
         )
         mult_parent = length(expr.nodes)
-        Nonlinear._parse_expression(data, expr, xy.a, mult_parent)
-        Nonlinear._parse_expression(data, expr, xy.b, mult_parent)
+        Nonlinear.parse_expression(data, expr, xy.a, mult_parent)
+        Nonlinear.parse_expression(data, expr, xy.b, mult_parent)
         if !isone(c)
-            Nonlinear._parse_expression(data, expr, c, mult_parent)
+            Nonlinear.parse_expression(data, expr, c, mult_parent)
         end
     end
     return
@@ -170,14 +170,14 @@ struct NonlinearParameter <: AbstractJuMPScalar
     index::Int
 end
 
-function Nonlinear._parse_expression(
+function Nonlinear.parse_expression(
     data::Nonlinear.NonlinearData,
     expr::Nonlinear.NonlinearExpression,
     x::NonlinearParameter,
     parent::Int,
 )
     index = Nonlinear.ParameterIndex(x.index)
-    return Nonlinear._parse_expression(data, expr, index, parent)
+    return Nonlinear.parse_expression(data, expr, index, parent)
 end
 
 function add_nonlinear_parameter(model::Model, value::Real)
@@ -243,14 +243,14 @@ struct NonlinearExpression <: AbstractJuMPScalar
     index::Int
 end
 
-function Nonlinear._parse_expression(
+function Nonlinear.parse_expression(
     data::Nonlinear.NonlinearData,
     expr::Nonlinear.NonlinearExpression,
     x::NonlinearExpression,
     parent::Int,
 )
     index = Nonlinear.ExpressionIndex(x.index)
-    return Nonlinear._parse_expression(data, expr, index, parent)
+    return Nonlinear.parse_expression(data, expr, index, parent)
 end
 
 """
