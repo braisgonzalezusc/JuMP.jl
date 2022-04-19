@@ -388,11 +388,8 @@ function nonlinear_expr_string(
     mode::MIME,
     c::Nonlinear.NonlinearExpression,
 )
-    expr = Nonlinear.convert_to_expr(
-        model.nlp_data,
-        c;
-        moi_output_format = false,
-    )
+    expr =
+        Nonlinear.convert_to_expr(model.nlp_data, c; moi_output_format = false)
     # Walk terms, and replace
     #    MOI.VariableIndex => VariableRef
     #    Nonlinear.ExpressionIndex => _NonlinearExpressionIO
