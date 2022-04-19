@@ -149,8 +149,7 @@ If you require only `:ExprGraph`, it is more efficient to pass
 function optimize!(
     model::Model;
     ignore_optimize_hook = (model.optimize_hook === nothing),
-    differentiation_backend::Nonlinear.AbstractAutomaticDifferentiation =
-        Nonlinear.SparseReverseMode(),
+    differentiation_backend::Nonlinear.AbstractAutomaticDifferentiation = Nonlinear.SparseReverseMode(),
     kwargs...,
 )
     # The nlp_data is not kept in sync, so re-set it here.

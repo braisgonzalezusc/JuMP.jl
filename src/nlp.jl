@@ -705,8 +705,7 @@ derivatives.
 """
 function NLPEvaluator(
     model::Model;
-    differentiation_backend::Nonlinear.AbstractAutomaticDifferentiation =
-        Nonlinear.SparseReverseMode(),
+    differentiation_backend::Nonlinear.AbstractAutomaticDifferentiation = Nonlinear.SparseReverseMode(),
 )
     _init_NLP(model)
     Nonlinear.set_differentiation_backend(
