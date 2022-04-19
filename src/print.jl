@@ -388,7 +388,7 @@ function nonlinear_expr_string(
     mode::MIME,
     c::Nonlinear.NonlinearExpression,
 )
-    expr = Nonlinear.convert_to_expression(
+    expr = Nonlinear.convert_to_expr(
         model.nlp_data,
         c;
         moi_output_format = false,
