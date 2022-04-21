@@ -423,7 +423,7 @@ function dual(c::NonlinearConstraintRef)
         append!(dual, MOI.get(c.model, MOI.NLPBlockDual()))
     end
     index = Nonlinear.ConstraintIndex(c.index.value)
-    return dual[Nonlinear.row(c.model.nlp_data, index)]
+    return dual[Nonlinear.ordinal_index(c.model.nlp_data, index)]
 end
 
 """

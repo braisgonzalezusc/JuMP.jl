@@ -155,12 +155,12 @@ function optimize!(
     # The nlp_data is not kept in sync, so re-set it here.
     # TODO: Consider how to handle incremental solves.
     if model.nlp_data !== nothing
-        block = MOI.NLPBlockData(
+        Nonlinear.set_differentiation_backend(
             model.nlp_data,
-            index.(all_variables(model)),
             differentiation_backend,
+            index.(all_variables(model)),
         )
-        MOI.set(model, MOI.NLPBlock(), block)
+        MOI.set(model, MOI.NLPBlock(), MOI.NLPBlockData(model.nlp_data))
     end
     # If the user or an extension has provided an optimize hook, call
     # that instead of solving the model ourselves
