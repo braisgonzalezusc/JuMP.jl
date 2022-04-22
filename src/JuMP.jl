@@ -145,7 +145,7 @@ mutable struct Model <: AbstractModel
     # where kwargs get passed along to subsequent solve calls.
     optimize_hook::Any
     # TODO: Document.
-    nlp_data::Union{Nothing,Nonlinear.NonlinearData}
+    nlp_data::Union{Nothing,Nonlinear.Model}
     # Dictionary from variable and constraint names to objects.
     obj_dict::Dict{Symbol,Any}
     # Number of times we add large expressions. Incremented and checked by

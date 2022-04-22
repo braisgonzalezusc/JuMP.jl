@@ -1168,9 +1168,9 @@ function test_JuMP_extensions()
 end
 
 function test_rad2deg_and_deg2rad()
-    data = JuMP.Nonlinear.NonlinearData()
+    model = JuMP.Nonlinear.Model()
     x = 1.0
-    operators = data.operators
+    operators = model.operators
     @test JuMP.Nonlinear.eval_univariate_hessian(operators, :rad2deg, x) == 0.0
     @test JuMP.Nonlinear.eval_univariate_hessian(operators, :deg2rad, x) == 0.0
     return
@@ -1394,7 +1394,8 @@ function test_nonlinear_constraint_dual()
     @objective(model, Min, x)
     optimize!(model)
     mock = unsafe_backend(model)
-    MOI.initialize(model.nlp_data, Symbol[])
+    block = MOI.get(model, MOI.NLPBlock())
+    MOI.initialize(block.evaluator, Symbol[])
     MOI.set(mock, MOI.TerminationStatus(), MOI.LOCALLY_SOLVED)
     MOI.set(mock, MOI.ResultCount(), 1)
     MOI.set(mock, MOI.VariablePrimal(), optimizer_index(x), -sqrt(2))

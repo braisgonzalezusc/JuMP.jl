@@ -285,12 +285,12 @@ function MOI.copy_to(dest::MOI.ModelLike, src::Model)
     if src.nlp_data !== nothing
         # Re-set the NLP block in-case things have changed since last
         # solve.
-        Nonlinear.set_differentiation_backend(
+        evaluator = Nonlinear.Evaluator(
             src.nlp_data,
             Nonlinear.SparseReverseMode(),
             index.(all_variables(src)),
         )
-        MOI.set(src, MOI.NLPBlock(), MOI.NLPBlockData(src.nlp_data))
+        MOI.set(src, MOI.NLPBlock(), MOI.NLPBlockData(evaluator))
     end
     return MOI.copy_to(dest, backend(src))
 end

@@ -377,7 +377,7 @@ end
     nonlinear_expr_string(
         model::Model,
         mode::MIME,
-        c::Nonlinear.NonlinearExpression,
+        c::Nonlinear.Expression,
     )
 
 Return a string representation of the nonlinear expression `c` belonging to
@@ -386,10 +386,9 @@ Return a string representation of the nonlinear expression `c` belonging to
 function nonlinear_expr_string(
     model::Model,
     mode::MIME,
-    c::Nonlinear.NonlinearExpression,
+    c::Nonlinear.Expression,
 )
-    expr =
-        Nonlinear.convert_to_expr(model.nlp_data, c; moi_output_format = false)
+    expr = Nonlinear.convert_to_expr(model.nlp_data, c)
     # Walk terms, and replace
     #    MOI.VariableIndex => VariableRef
     #    Nonlinear.ExpressionIndex => _NonlinearExpressionIO
