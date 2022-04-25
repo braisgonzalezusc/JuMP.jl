@@ -346,7 +346,6 @@ end
 
 const NonlinearConstraintRef = ConstraintRef{Model,NonlinearConstraintIndex}
 
-
 function _normalize_constraint_expr(lhs::Real, body, rhs::Real)
     return Float64(lhs), body, Float64(rhs)
 end
