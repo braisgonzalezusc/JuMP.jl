@@ -11,7 +11,8 @@
 #############################################################################
 
 import Pkg
-Pkg.add(Pkg.PackageSpec(name = "MathOptInterface", rev = "od/nonlinear"))
+branch = "od/multivariate-hessians"
+Pkg.add(Pkg.PackageSpec(name = "MathOptInterface", rev = branch))
 
 using Test
 
